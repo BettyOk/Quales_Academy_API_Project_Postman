@@ -1,0 +1,254 @@
+{
+	"info": {
+		"_postman_id": "0ed25b94-195b-4119-91db-479580de308d",
+		"name": "Course Management",
+		"description": "**Assignment for the Postman Module.**\n\n- Create three requests for the List Course, Put Course and Delete Course endpoints, add this to your existing collections.\n    \n- Write assertions for the above, testing for the status code, the course description and the course id.\n    \n- Write an automated test for the entire collections created(testing for the POST, GET, PUT and Delete endpoints), this should include the assertions above.\n    \n- [https://quales.atlassian.net/wiki/spaces/IG/pages/7176199/Postman+Test+Execution](https://quales.atlassian.net/wiki/spaces/IG/pages/7176199/Postman+Test+Execution)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33568704",
+		"_collection_link": "https://winter-flare-455417.postman.co/workspace/Quales-Academy-API-Project~93b84f32-9c1c-426a-93ac-16ac99ee0c2d/collection/33568704-0ed25b94-195b-4119-91db-479580de308d?action=share&source=collection_link&creator=33568704"
+	},
+	"item": [
+		{
+			"name": "Create Course",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is within the acceptable range\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"// Check if id is present and valid\r",
+							"pm.test(\"id is present\", function () {\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"    pm.expect(jsonData.id).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							"// Check if description matches the expected value\r",
+							"pm.test(\"Description is correct\", function () {\r",
+							"    pm.expect(jsonData).to.have.property('description');\r",
+							"    pm.expect(jsonData.description).to.eql(\"I am learning Postman\");\r",
+							"});\r",
+							"\r",
+							"pm.globals.set(\"courseId\", jsonData.id);\r",
+							"pm.test(\"courseId is present and matches stored value\", function () {\r",
+							"     pm.expect(jsonData).to.have.property('id');\r",
+							"     pm.expect(jsonData.id).to.eql(pm.globals.get(\"courseId\"));\r",
+							" });\r",
+							" "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Postman Tutorials for Betty\",\r\n    \"categoryId\": 2,\r\n    \"description\": \"I am learning Postman\",\r\n    \"courseUrl\": \"https://www.youtube.com/watch?v=8vXoMqWgbQQ\",\r\n    \"imageUrl\": \"https://source.unsplash.com/user/c_v_r/900x800\",\r\n    \"location\": \"online\",\r\n    \"isPremium\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base}}/api/courses/",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"api",
+						"courses",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Courses",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 1000ms\", function () {",
+							"  pm.expect(pm.response.responseTime).to.be.below(1000);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base}}/api/courses/",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"api",
+						"courses",
+						""
+					]
+				},
+				"description": "### GET /api/courses/\n\nThis endpoint retrieves a list of courses.\n\n#### Request\n\nThere are no request parameters for this endpoint.\n\n#### Response\n\nThe response will be a JSON object with the following schema:\n\n``` json\n{\n  \"data\": [\n    {\n      \"id\": \"number\",\n      \"title\": \"string\",\n      \"categoryId\": \"string\",\n      \"description\": \"string\",\n      \"imageUrl\": \"string\",\n      \"isPremium\": \"boolean\",\n      \"location\": \"string\",\n      \"imageurl\": \"string\",\n      \"courseUrl\": \"string\",\n      \"createdAt\": \"string\"\n    }\n  ],\n  \"links\": {\n    \"first\": \"string\",\n    \"last\": \"string\",\n    \"prev\": \"string or null\",\n    \"next\": \"string\"\n  },\n  \"meta\": {\n    \"current_page\": \"number\",\n    \"from\": \"number\",\n    \"last_page\": \"number\",\n    \"links\": [\n      {\n        \"url\": \"string or null\",\n        \"label\": \"string\",\n        \"active\": \"boolean\"\n      }\n    ],\n    \"path\": \"string\",\n    \"per_page\": \"number\",\n    \"to\": \"number\",\n    \"total\": \"number\"\n  }\n}\n\n ```"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Course",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 1000ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Postman for Betty\",\r\n    \"categoryId\": 2,\r\n    \"description\": \"Learning how to use Postman\",\r\n    \"courseUrl\": \"https://www.youtube.com/watch?v=8vXoMqWgbQQ\",\r\n    \"imageUrl\": \"https://source.unsplash.com/user/c_v_r/900x800\",\r\n    \"location\": \"online\",\r\n    \"isPremium\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base}}/api/courses/{{courseId}}",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"api",
+						"courses",
+						"{{courseId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Course",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is within an acceptable range\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(300);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response body is null\", function () {\r",
+							"    const responseData = xml2Json(pm.response.text());\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.null;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base}}/api/courses/{{courseId}}",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"api",
+						"courses",
+						"{{courseId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
