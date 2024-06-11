@@ -227,6 +227,23 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Ping Course",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base}}/ping",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"ping"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
